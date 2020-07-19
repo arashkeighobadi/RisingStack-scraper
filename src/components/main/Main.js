@@ -1,5 +1,6 @@
 import React from 'react';
 import MainView from './MainView';
+import axios from 'axios';
 
 class Main extends React.Component {
 
@@ -23,7 +24,13 @@ class Main extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A number was submitted: ' + this.state.number_of_pages);
+        // alert('A number was submitted: ' + this.state.number_of_pages);
+        axios.post('/scraper', {number_of_pages: this.state.number_of_pages})
+            .then(res => {
+                alert(res.data.message);
+            })
+            .catch(err => console.log(err));
+
         event.preventDefault();
     }
 

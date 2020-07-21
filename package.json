@@ -16,7 +16,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "all": "npm run build && cd ./backend/ && npm start"
+    "all": "npm run build && cd ./backend/ && npm start",
+    "server": "cd ./backend/ && npm start"
   },
   "eslintConfig": {
     "extends": "react-app"

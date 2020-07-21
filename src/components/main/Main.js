@@ -1,6 +1,7 @@
 import React from 'react';
 import MainView from './MainView';
 import axios from 'axios';
+import PostItem from '../postItem/PostItem';
 
 class Main extends React.Component {
 
@@ -9,6 +10,8 @@ class Main extends React.Component {
         this.state = {
             instruction: "Enter the number of blog pages to be scraped:",
             number_of_pages: '',
+            root: '',
+            routes: [],
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,10 +29,21 @@ class Main extends React.Component {
     handleSubmit(event) {
         axios.post('/scraper', {number_of_pages: this.state.number_of_pages})
             .then(res => {
-                if(res.data.error){
-                    throw res.data.error;
+                res = res.data;
+
+                if(res.error){
+                    throw res.error;
                 }
-                alert(res.data.result.length + ' routes received.');
+
+                this.setState((prevState) => {
+                    return({
+                        routes: res.result.routes,
+                        root: res.result.root,
+                    });
+                })
+                // this.state.routes = res.result.routes;
+                // this.state.root = res.result.root;
+                alert(res.result.routes.length + ' routes received.');
             })
             .catch(err => alert(err));
 
@@ -37,11 +51,19 @@ class Main extends React.Component {
     }
 
     render() {
+        const postItems = this.state.routes.map(route => {
+            let url = this.state.root + route;
+            return (
+                <PostItem url={url} text={url}/>
+            );
+        });
+
         return(
             <MainView
                 data={this.state}
                 handleChange={this.handleChange}
                 handleSubmit={this.handleSubmit}
+                postItems={postItems}
             />
         );
     }

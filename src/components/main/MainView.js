@@ -4,11 +4,10 @@ class MainView extends React.Component {
 
     constructor(props) {
         super();
-        this.props = props;
     }
 
     render() {
-        let props = this.props;
+        const props = this.props;
 
         return(
             <div style={styles.divStyle}>
@@ -25,6 +24,7 @@ class MainView extends React.Component {
                     </label>
                     <input type="submit" value='Submit' />
                 </form>
+                {props.postItems}
             </div>
         );
     }

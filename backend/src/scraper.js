@@ -16,6 +16,7 @@ class Scraper {
         return new Promise((resolve, reject) => {
 
             let result = {
+                root: this.RisingStackBlog,
                 routes: this.routes,
                 error: this.error,
             }

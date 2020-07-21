@@ -18,7 +18,7 @@ router.post('/scraper',
     scraper.scrape(number_of_pages)
     .then( res => {
       console.log('Number of routes found: ' + res.routes.length);
-      response.json({ result: res.routes });
+      response.json({ result: res });
 
     }).catch(err => {
       let errCode = err.response.status;

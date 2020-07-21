@@ -24,12 +24,14 @@ class Main extends React.Component {
     }
 
     handleSubmit(event) {
-        // alert('A number was submitted: ' + this.state.number_of_pages);
         axios.post('/scraper', {number_of_pages: this.state.number_of_pages})
             .then(res => {
-                alert(res.data.message);
+                if(res.data.error){
+                    throw res.data.error;
+                }
+                alert(res.data.result.length + ' routes received.');
             })
-            .catch(err => console.log(err));
+            .catch(err => alert(err));
 
         event.preventDefault();
     }

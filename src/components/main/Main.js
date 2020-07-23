@@ -30,20 +30,23 @@ class Main extends React.Component {
         axios.post('/scraper', {number_of_pages: this.state.number_of_pages})
             .then(res => {
                 res = res.data;
+                let routes = [];
+                let root = '';
 
                 if(res.error){
                     throw res.error;
                 }
 
+                routes = res.result.posts.map(post => post.route);
+                root = res.result.root;
+
                 this.setState((prevState) => {
                     return({
-                        routes: res.result.routes,
-                        root: res.result.root,
+                        routes: routes,
+                        root: root,
                     });
                 })
-                // this.state.routes = res.result.routes;
-                // this.state.root = res.result.root;
-                alert(res.result.routes.length + ' routes received.');
+                alert(routes.length + ' routes received.');
             })
             .catch(err => alert(err));
 

@@ -5,7 +5,7 @@ class HeaderView extends React.Component {
     render() {
         return(
             <div style={styles.divStyle}>
-                <p>This is the header.</p>
+                <p>RisingStack Scraper</p>
             </div>
         );
     }

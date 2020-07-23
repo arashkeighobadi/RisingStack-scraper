@@ -31,7 +31,7 @@ class Scraper {
                         resolve(this.blogInfo);
                     }).catch(err => reject(err))
                 :
-                    this.scrapeTheBlog(number_of_pages).then(result => {
+                    this._scrapeTheBlog(number_of_pages).then(result => {
                         resolve(result);
                     }
                     ).catch(err => reject(err));
@@ -39,7 +39,7 @@ class Scraper {
         });
     }
 
-    scrapeTheBlog(number_of_pages) {
+    _scrapeTheBlog(number_of_pages) {
         let blogInfo = this.blogInfo;
 
         return new Promise((resolve, reject) => {
@@ -79,7 +79,7 @@ class Scraper {
                             let linkExists = false;
                             console.log(postRoute);
 
-                            linkExists = this.lookForLinks($1, '.post-content', 'a');
+                            linkExists = this._lookForLinks($1, '.post-content', 'a');
                             
                             if(!linkExists){
                                 blogInfo.posts.push(
@@ -101,7 +101,7 @@ class Scraper {
                                         then block because the result of scraping each page is independent of the others.
                             */
                             if(coveredPosts === posts.length){
-                                this.scrapeTheBlog(number_of_pages - 1).then(res => {
+                                this._scrapeTheBlog(number_of_pages - 1).then(res => {
                                     resolve(blogInfo);
                                     console.log('page ' + number_of_pages + ' resolved');
                                 }).catch(err => reject(err));
@@ -124,7 +124,7 @@ class Scraper {
         });
     }
 
-    lookForLinks(selector, parent, target) {
+    _lookForLinks(selector, parent, target) {
 
         let linkExists = false;
         const $ = selector;
@@ -146,7 +146,7 @@ class Scraper {
                             return false;
                         }
                     }
-                    linkExists = this.lookForLinks($, ref, target);
+                    linkExists = this._lookForLinks($, ref, target);
                     if(linkExists){
                         return false;
                     }

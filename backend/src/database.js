@@ -59,13 +59,10 @@ class Database {
             });
             
             // Create the cache table
-            connection.query(CREATE_CACHE_TABLE_SQL, (err, result) => {
-                if(err) {
-                    console.log(err.message);
-                }
-                else {
-                    console.log(result);
-                }
+            this._runQuery(CREATE_CACHE_TABLE_SQL).then(result => 
+                console.log(result)
+            ).catch(err => {
+                console.log(err.message);
             });
         });
 
@@ -161,7 +158,7 @@ class Database {
                 const response = {error, result};
 
                 if(error) {
-                    console.log(error);
+                    // console.log(error);
                     reject(error);
                 }
                 else{

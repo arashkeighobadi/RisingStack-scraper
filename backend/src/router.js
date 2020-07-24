@@ -15,7 +15,7 @@ router.get('*', function(req, res) {
 router.post('/scraper', 
   (request, response) => {
     let number_of_pages = parseInt(request.body.number_of_pages);
-    scraper.scrape(number_of_pages)
+    scraper.getLinklessArticles(number_of_pages)
     .then( res => {
       console.log('Number of posts found: ' + res.posts.length);
       response.json({ result: res });

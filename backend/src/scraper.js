@@ -10,18 +10,19 @@ const risingStackWebsite = '://risingstack.com/';
 class Scraper {
 
     constructor() {
-        // this.posts = [];
-        this.error = null;
         this.db = new Database();
         this.blogInfo = {
             root: risingStackBlog,
             posts: [],
-            error: this.error,
+            error: null,
         }
-        // this.number_of_scraped_pages = 0;
     }
 
-    scrape(number_of_pages) {
+    /* 
+        Returns a promise and, in case of successful information gathering, passes
+        `this.blogInfo` object to the `resolve` function.
+    */
+    getLinklessArticles(number_of_pages) {
         return new Promise((resolve, reject) => {
             this._isCacheUpToDate(number_of_pages).then(answer => {
 
@@ -39,6 +40,11 @@ class Scraper {
         });
     }
 
+    /* 
+        Scrapes the first `number_of_page` pages of the blog. Looks inside each article to find
+        the ones without a link to `risingStackWebsite`. The result will be recorded in `this.blogInfo`
+        object. This object will be returned in case of successful process.
+    */
     _scrapeTheBlog(number_of_pages) {
         let blogInfo = this.blogInfo;
 
@@ -108,15 +114,15 @@ class Scraper {
                             }
                         })
                         .catch(err => {
-                            this.error = 'Error while accessing a post: ' + err;
-                            console.log(this.error);
+                            blogInfo.error = 'Error while accessing a post: ' + err;
+                            console.log(blogInfo.error);
                         });
                     }
                 }).catch(err => reject(err));
 
             }).catch(err => {
-                this.error = 'Error while accessing the blog: ' + err;
-                console.log(this.error);
+                blogInfo.error = 'Error while accessing the blog: ' + err;
+                console.log(blogInfo.error);
                 err.pageNumber = number_of_pages;
                 reject(err);
                 return;
@@ -124,7 +130,11 @@ class Scraper {
         });
     }
 
-    _lookForLinks(selector, parent, target) {
+    /* 
+        Recursively, look inside the parent element to find links in the children.
+        Don't look inside iframe elements.
+    */
+    _lookForLinks(selector, parent) {
 
         let linkExists = false;
         const $ = selector;
@@ -137,16 +147,16 @@ class Scraper {
             (index, ref) => {
                 if(ref){
                     // $(ref)[0].name refers to the HTML tag name of the ref object
-                    if($(ref)[0].name === target){
+                    if($(ref)[0].name === 'a'){
                         let href = $(ref).attr('href');
                         if(href && href.search(risingStackWebsite) > 0) {
                             console.log(href);
                             linkExists = true;
-                            // by returning false inside each, we make it ignore the remaining elements
+                            // by returning false inside `each`, we make it ignore the remaining elements
                             return false;
                         }
                     }
-                    linkExists = this._lookForLinks($, ref, target);
+                    linkExists = this._lookForLinks($, ref);
                     if(linkExists){
                         return false;
                     }
@@ -216,6 +226,9 @@ class Scraper {
         });
     }
 
+    /* 
+        Get the route of the post in a certain page at a certain index
+    */
     _getPostRoute(page, idx_in_page) {
         let url = '';
 
